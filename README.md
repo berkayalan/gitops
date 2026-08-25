@@ -37,3 +37,8 @@ kind create cluster --config kind/prod-cluster.yaml
 kind load docker-image node-app:latest --name dev-cluster
 kind load docker-image node-app:latest --name prod-cluster
 ```
+
+```bash
+flux bootstrap github --owner=berkayalan --repository=gitops --branch=main --path=k8s/clusters/dev --personal
+flux bootstrap github --owner=berkayalan --repository=gitops --branch=main --path=k8s/clusters/prod --personal
+```
