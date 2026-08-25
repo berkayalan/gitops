@@ -5,4 +5,3 @@ resources:
 - ../base/app
 patches:
 - path: patch-app.yaml
-- path: patch-mongo-pv.yaml

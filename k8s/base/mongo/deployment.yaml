@@ -1,10 +1,10 @@
+# k8s/base/mongo/deployment.yaml
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: mongodb
   namespace: default
 spec:
-  serviceName: "mongodb"
   replicas: 1
   selector:
     matchLabels:
@@ -20,9 +20,8 @@ spec:
         ports:
         - containerPort: 27017
         volumeMounts:
-        - name: mongo-storage
+        - name: mongo-ephemeral-storage
           mountPath: /data/db
       volumes:
-      - name: mongo-storage
-        persistentVolumeClaim:
-          claimName: mongo-pvc
+      - name: mongo-ephemeral-storage
+        emptyDir: {}

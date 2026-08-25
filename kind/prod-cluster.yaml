@@ -5,5 +5,9 @@ name: prod-cluster
 nodes:
 - role: control-plane
 - role: worker
+  extraPortMappings:
+    - containerPort: 30080
+      hostPort: 8082
+      protocol: TCP
 - role: worker
 - role: worker
