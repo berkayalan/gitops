@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GitOps Task App</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; line-height: 1.5; }
+    .card { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; background: #0066cc; color: white; font-size: 12px; font-weight: bold; }
+    .badge.prod { background: #d9381e; }
+    input { padding: 10px; width: 70%; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    ul { list-style: none; padding: 0; }
+    li { background: white; border: 1px solid #ddd; margin: 8px 0; padding: 10px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h2>🚀 GitOps Persistent Mongo App</h2>
+  <div class="card">
+    <span class="badge" id="env-badge">Env: Loading...</span>
+    <p><strong>Serving Pod:</strong> <code id="host-name">Loading...</code></p>
+  </div>
+
+  <form id="item-form">
+    <input type="text" id="title" placeholder="Write a persistent note..." required />
+    <button type="submit">Save to Mongo</button>
+  </form>
+
+  <h3>Database Items:</h3>
+  <ul id="items-list"></ul>
+
+  <script>
+    async function loadData() {
+      const info = await fetch('/api/info').then(r => r.json());
+      const badge = document.getElementById('env-badge');
+      badge.innerText = 'Env: ' + info.environment;
+      if (info.environment === 'production') badge.classList.add('prod');
+      document.getElementById('host-name').innerText = info.hostname;
+
+      const items = await fetch('/api/items').then(r => r.json());
+      const list = document.getElementById('items-list');
+      list.innerHTML = items.length === 0 ? '<li><em>No items yet.</em></li>' : '';
+      items.forEach(i => {
+        const li = document.createElement('li');
+        li.innerText = `${i.title} (${new Date(i.createdAt).toLocaleTimeString()})`;
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById('item-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('title');
+      await fetch('/api/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: input.value })
+      });
+      input.value = '';
+      loadData();
+    };
+
+    loadData();
+  </script>
+</body>
+</html>
