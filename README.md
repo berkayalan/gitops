@@ -39,6 +39,12 @@ kind load docker-image node-app:latest --name prod-cluster
 ```
 
 ```bash
+export GITLAB_TOKEN="glpat_yourPersonalAccessToken"
+
 flux bootstrap github --owner=berkayalan --repository=gitops --branch=main --path=k8s/clusters/dev --personal
 flux bootstrap github --owner=berkayalan --repository=gitops --branch=main --path=k8s/clusters/prod --personal
 ```
+
+delete all existing KinD clusters at once
+
+```kind delete clusters --all```
