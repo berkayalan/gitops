@@ -34,6 +34,7 @@ kind create cluster --config kind/prod-cluster.yaml
 
 # Sideload image into KinD nodes
 ```bash
+docker build -t node-app:latest ./app
 kind load docker-image node-app:latest --name dev-cluster
 kind load docker-image node-app:latest --name prod-cluster
 ```
@@ -41,8 +42,11 @@ kind load docker-image node-app:latest --name prod-cluster
 ```bash
 export GITLAB_TOKEN="glpat_yourPersonalAccessToken"
 
+flux check --pre
 flux bootstrap github --owner=berkayalan --repository=gitops --branch=main --path=k8s/clusters/dev --personal
 flux bootstrap github --owner=berkayalan --repository=gitops --branch=main --path=k8s/clusters/prod --personal
+
+flux get sources git
 ```
 
 delete all existing KinD clusters at once
